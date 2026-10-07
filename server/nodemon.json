@@ -1,0 +1,4 @@
+{
+  "watch": ["controllers", "middleware", "models", "routes", "utils", "server.js", "seeder.js", ".env"],
+  "ignore": [".mongo-data/**", "node_modules/**"]
+}

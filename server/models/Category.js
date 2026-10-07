@@ -1,0 +1,29 @@
+const mongoose = require('mongoose');
+
+const categorySchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please add a category name'],
+      unique: true,
+      trim: true,
+    },
+    description: {
+      type: String,
+      required: [true, 'Please add a description'],
+    },
+    image: {
+      type: String,
+      default: 'https://via.placeholder.com/150',
+    },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+module.exports = mongoose.model('Category', categorySchema);
