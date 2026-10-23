@@ -3,7 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import api from '../utils/api';
-import { MapPin, CreditCard, CheckCircle2, Ticket } from 'lucide-react';
+import { MapPin, CreditCard, CheckCircle2, Ticket, Sparkles } from 'lucide-react';
+
+const FREE_DELIVERY_THRESHOLD = 499;
+const DELIVERY_FEE = 25;
 
 const Checkout = () => {
   const { cart, loading: cartLoading, getCartTotal, clearCart, fetchCart } = useContext(CartContext);
@@ -117,7 +120,9 @@ const Checkout = () => {
 
 
   const subtotal = getCartTotal();
-  const deliveryFee = subtotal >= 500 ? 0 : 20;
+  const isFreeDelivery = subtotal >= FREE_DELIVERY_THRESHOLD;
+  const deliveryFee = isFreeDelivery ? 0 : DELIVERY_FEE;
+  const remainingForFree = Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal);
   const discount = couponData ? couponData.discount : 0;
   const total = subtotal + deliveryFee - discount;
 
@@ -247,9 +252,29 @@ const Checkout = () => {
                 <div className="flex justify-between text-gray-600">
                   <span>Delivery Fee</span>
                   <span className="font-medium text-gray-900">
-                    {deliveryFee === 0 ? <span className="text-primary">Free</span> : `₹${deliveryFee.toFixed(2)}`}
+                    {deliveryFee === 0 ? (
+                      <span className="text-emerald-600 font-bold uppercase text-xs px-2 py-0.5 rounded-full bg-emerald-50">Free</span>
+                    ) : (
+                      `₹${deliveryFee.toFixed(2)}`
+                    )}
                   </span>
                 </div>
+
+                {!isFreeDelivery ? (
+                  <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200/70 text-amber-900 text-xs flex items-center justify-between">
+                    <span>
+                      Add items worth <strong className="text-amber-950 font-bold">₹{remainingForFree.toFixed(0)}</strong> more for <strong>FREE Delivery</strong>
+                    </span>
+                    <Link to="/products" className="font-bold underline text-amber-800 hover:text-amber-950 shrink-0 ml-2">
+                      + Add
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200/70 text-emerald-800 text-xs font-semibold flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span>Free express delivery unlocked for orders above ₹499!</span>
+                  </div>
+                )}
                 {discount > 0 && (
                   <div className="flex justify-between text-green-600">
                     <span>Coupon Discount</span>

@@ -4,6 +4,9 @@ const Product = require('../models/Product');
 const Coupon = require('../models/Coupon');
 const Address = require('../models/Address');
 
+const FREE_DELIVERY_THRESHOLD = 499;
+const DELIVERY_FEE = 25;
+
 const generateOrderNumber = () => {
   return 'QC' + Math.floor(100000 + Math.random() * 900000);
 };
@@ -81,7 +84,7 @@ const createOrder = async (req, res) => {
     }
 
     // 5. Calculate Total
-    const deliveryFee = subtotal >= 500 ? 0 : 20;
+    const deliveryFee = subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : DELIVERY_FEE;
     const total = subtotal + deliveryFee - discount;
 
     // 6. Create Order

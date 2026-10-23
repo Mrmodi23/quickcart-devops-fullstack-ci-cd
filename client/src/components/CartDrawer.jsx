@@ -5,6 +5,7 @@ import { useToast } from '../context/ToastContext';
 import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, Sparkles, ShieldCheck } from 'lucide-react';
 
 const FREE_DELIVERY_THRESHOLD = 499;
+const DELIVERY_FEE = 25;
 
 const CartDrawer = () => {
   const { 
@@ -28,6 +29,8 @@ const CartDrawer = () => {
   const count = getCartCount();
   const remainingForFreeDelivery = Math.max(0, FREE_DELIVERY_THRESHOLD - total);
   const freeDeliveryProgress = Math.min(100, (total / FREE_DELIVERY_THRESHOLD) * 100);
+  const isFreeDelivery = total >= FREE_DELIVERY_THRESHOLD;
+  const deliveryFee = isFreeDelivery ? 0 : DELIVERY_FEE;
 
   const handleCheckout = () => {
     closeDrawer();
@@ -209,16 +212,16 @@ const CartDrawer = () => {
                 <div className="flex justify-between">
                   <span>Delivery Fee</span>
                   <span>
-                    {remainingForFreeDelivery === 0 ? (
+                    {isFreeDelivery ? (
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold uppercase">FREE</span>
                     ) : (
-                      <span className="font-medium text-gray-900 dark:text-white">₹25</span>
+                      <span className="font-medium text-gray-900 dark:text-white">₹{deliveryFee}</span>
                     )}
                   </span>
                 </div>
                 <div className="pt-2 border-t border-gray-200/80 dark:border-slate-700/80 flex justify-between text-sm font-bold text-gray-900 dark:text-white">
                   <span>Grand Total</span>
-                  <span className="text-primary text-base">₹{total + (remainingForFreeDelivery === 0 ? 0 : 25)}</span>
+                  <span className="text-primary text-base">₹{total + deliveryFee}</span>
                 </div>
               </div>
 

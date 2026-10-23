@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 
 const FREE_DELIVERY_THRESHOLD = 499;
+const DELIVERY_FEE = 25;
 
 const Cart = () => {
   const { 
@@ -100,7 +101,7 @@ const Cart = () => {
   const savings = getCartSavings();
   const couponDiscount = appliedCoupon ? appliedCoupon.discount : 0;
   const isFreeDelivery = cartTotal >= FREE_DELIVERY_THRESHOLD;
-  const deliveryFee = isFreeDelivery ? 0 : 25;
+  const deliveryFee = isFreeDelivery ? 0 : DELIVERY_FEE;
   const grandTotal = Math.max(0, cartTotal - couponDiscount + deliveryFee + tipAmount);
   const remainingForFree = Math.max(0, FREE_DELIVERY_THRESHOLD - cartTotal);
 
@@ -331,7 +332,7 @@ const Cart = () => {
                     {isFreeDelivery ? (
                       <span className="text-emerald-600 dark:text-emerald-400 font-bold uppercase">FREE</span>
                     ) : (
-                      <span className="font-medium text-gray-900 dark:text-white">₹25</span>
+                      <span className="font-medium text-gray-900 dark:text-white">₹{deliveryFee}</span>
                     )}
                   </span>
                 </div>
