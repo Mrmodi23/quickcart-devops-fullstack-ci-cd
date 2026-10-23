@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import { useToast } from '../context/ToastContext';
 import api from '../utils/api';
-import { MapPin, CreditCard, CheckCircle2, Ticket, Sparkles } from 'lucide-react';
+import { MapPin, CreditCard, CheckCircle2, Ticket, Sparkles, ArrowLeft } from 'lucide-react';
 
 const FREE_DELIVERY_THRESHOLD = 499;
 const DELIVERY_FEE = 25;
@@ -129,6 +129,16 @@ const Checkout = () => {
   return (
     <div className="bg-gray-50 min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Back navigation button */}
+        <button
+          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/cart'))}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary mb-6 transition group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition duration-200" />
+          <span>Back to Cart</span>
+        </button>
+
         <h1 className="text-2xl font-bold text-gray-900 mb-8">Checkout</h1>
 
         <div className="flex flex-col lg:flex-row gap-8">

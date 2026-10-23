@@ -420,7 +420,7 @@ const Home = () => {
           </div>
         )}
 
-        <div className="mt-8 text-center">
+        <div className="mt-8 text-center pb-8">
           <Link
             to="/products"
             className="inline-flex items-center gap-2 px-8 py-3 rounded-2xl bg-white dark:bg-slate-800 text-gray-900 dark:text-white font-bold text-sm border border-gray-200 dark:border-slate-700 hover:border-emerald-500 hover:text-emerald-600 shadow-sm transition"
@@ -428,51 +428,6 @@ const Home = () => {
             <span>View All Grocery Catalog</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
-        </div>
-      </section>
-
-      {/* Promotional Banners Duo */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          
-          <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-800 text-white p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between min-h-[200px] shadow-lg">
-            <div className="space-y-2 relative z-10 max-w-xs">
-              <span className="text-[11px] font-extrabold uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md">
-                Organic Picks
-              </span>
-              <h3 className="text-2xl font-extrabold tracking-tight">Farm-Fresh Organic Greens & Herbs</h3>
-              <p className="text-xs text-emerald-100">100% Pesticide-free, harvested at dawn and delivered crisp.</p>
-            </div>
-            <div className="pt-4 relative z-10">
-              <Link 
-                to="/products"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-emerald-900 font-bold text-xs hover:bg-emerald-50 transition shadow-sm"
-              >
-                <span>Shop Organic</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          <div className="rounded-3xl bg-gradient-to-br from-purple-700 to-indigo-900 text-white p-6 sm:p-8 relative overflow-hidden flex flex-col justify-between min-h-[200px] shadow-lg">
-            <div className="space-y-2 relative z-10 max-w-xs">
-              <span className="text-[11px] font-extrabold uppercase tracking-wider bg-white/20 px-2.5 py-1 rounded-md">
-                Artisan Corner
-              </span>
-              <h3 className="text-2xl font-extrabold tracking-tight">Artisan Breads, Dips & Gourmet Munchies</h3>
-              <p className="text-xs text-purple-200">Fresh from premium neighborhood bakeries every morning.</p>
-            </div>
-            <div className="pt-4 relative z-10">
-              <Link 
-                to="/products"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white text-purple-900 font-bold text-xs hover:bg-purple-50 transition shadow-sm"
-              >
-                <span>Explore Bakery</span>
-                <ChevronRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
         </div>
       </section>
 

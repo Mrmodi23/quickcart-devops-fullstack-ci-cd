@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useToast } from '../context/ToastContext';
-import { MapPin, Plus, Edit, Trash2, Home, Briefcase, Building, Star, X, Map, Loader2 } from 'lucide-react';
+import { MapPin, Plus, Edit, Trash2, Home, Briefcase, Building, Star, X, Map, Loader2, ArrowLeft } from 'lucide-react';
 
 const Addresses = () => {
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
   const toast = useToast();
+  const navigate = useNavigate();
   
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -171,6 +172,15 @@ const Addresses = () => {
     <div className="bg-gray-50 min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Back navigation button */}
+        <button
+          onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/checkout'))}
+          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary mb-6 transition group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition duration-200" />
+          <span>Back</span>
+        </button>
+
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <h1 className="text-2xl font-bold text-gray-900">My Addresses</h1>
           <button 
