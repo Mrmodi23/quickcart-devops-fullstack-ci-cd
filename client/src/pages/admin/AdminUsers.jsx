@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import api from '../../utils/api';
+import { ArrowLeft } from 'lucide-react';
 
 const AdminUsers = () => {
   const [users, setUsers] = useState([]);
@@ -34,6 +36,16 @@ const AdminUsers = () => {
   return (
     <div className="bg-gray-50 min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Back navigation button */}
+        <Link
+          to="/admin"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary mb-6 transition group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition duration-200" />
+          <span>Back to Dashboard</span>
+        </Link>
+
         <h1 className="text-2xl font-bold text-gray-900 mb-8">Manage Users</h1>
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
           <div className="overflow-x-auto">

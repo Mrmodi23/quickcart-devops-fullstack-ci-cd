@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../utils/api';
-import { Plus, Edit, Trash2, Search } from 'lucide-react';
+import { Plus, Edit, Trash2, Search, ArrowLeft } from 'lucide-react';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -45,6 +45,15 @@ const AdminProducts = () => {
     <div className="bg-gray-50 min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
+        {/* Back navigation button */}
+        <Link
+          to="/admin"
+          className="inline-flex items-center gap-2 text-sm font-semibold text-gray-600 hover:text-primary mb-6 transition group"
+        >
+          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition duration-200" />
+          <span>Back to Dashboard</span>
+        </Link>
+
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
           <h1 className="text-2xl font-bold text-gray-900">Manage Products</h1>
           <Link to="/admin/products/new" className="bg-primary hover:bg-primary-dark text-white font-medium py-2 px-4 rounded-lg flex items-center gap-2 transition">
