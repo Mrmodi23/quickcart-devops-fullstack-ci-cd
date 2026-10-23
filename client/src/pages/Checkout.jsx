@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
+import { useToast } from '../context/ToastContext';
 import api from '../utils/api';
 import { MapPin, CreditCard, CheckCircle2, Ticket } from 'lucide-react';
 
@@ -17,6 +18,7 @@ const Checkout = () => {
   
   const [orderProcessing, setOrderProcessing] = useState(false);
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     const fetchAddresses = async () => {
@@ -51,8 +53,11 @@ const Checkout = () => {
         cartTotal: getCartTotal()
       });
       setCouponData(res.data.data);
+      toast.success(`Coupon applied: ₹${res.data.data.discountAmount} discount!`);
     } catch (err) {
-      setCouponError(err.response?.data?.message || 'Invalid coupon');
+      const msg = err.response?.data?.message || 'Invalid coupon';
+      setCouponError(msg);
+      toast.error(msg);
       setCouponData(null);
     }
   };
@@ -61,11 +66,12 @@ const Checkout = () => {
     setCouponCode('');
     setCouponData(null);
     setCouponError('');
+    toast.info('Coupon removed');
   };
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) {
-      alert('Please select a delivery address');
+      toast.warning('Please select a delivery address');
       return;
     }
 
@@ -79,10 +85,11 @@ const Checkout = () => {
       
       if (res.data.success) {
         await clearCart();
+        toast.success('Order placed successfully! 🚀');
         navigate(`/order-success/${res.data.data._id}`);
       }
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to place order');
+      toast.error(err.response?.data?.message || 'Failed to place order');
     } finally {
       setOrderProcessing(false);
     }

@@ -9,8 +9,8 @@
 }
 
 :root {
-  --background: #f9fafb;
-  --foreground: #111827;
+  --background: #f8fafc;
+  --foreground: #0f172a;
   --primary: #10b981;
   --primary-foreground: #ffffff;
 }
@@ -18,8 +18,25 @@
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-family: 'Plus Jakarta Sans', Inter, system-ui, -apple-system, sans-serif;
   transition: background-color 0.2s ease, color 0.2s ease;
+  overflow-x: hidden;
+}
+
+/* Custom Sleek Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.7);
 }
 
 /* Light mode defaults */
@@ -30,6 +47,61 @@ input, textarea, select {
 
 input::placeholder, textarea::placeholder {
   color: #9ca3af !important;
+}
+
+/* Animations */
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 3s ease-in-out infinite;
+}
+
+/* Glassmorphism Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+html.dark .glass-panel {
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Global Dark Mode Overrides for pristine visuals */
@@ -43,17 +115,19 @@ html.dark body {
 }
 
 html.dark nav {
-  background-color: #131b2e !important;
+  background-color: rgba(15, 23, 42, 0.92) !important;
   border-color: #1e293b !important;
 }
 
 html.dark .bg-white {
-  background-color: #131b2e !important;
+  background-color: #111827 !important;
   color: #f1f5f9;
 }
 
 html.dark .bg-gray-50,
-html.dark .bg-gray-50\/50 {
+html.dark .bg-gray-50\/50,
+html.dark .bg-gray-50\/60,
+html.dark .bg-gray-50\/70 {
   background-color: #0b0f19 !important;
 }
 
@@ -109,17 +183,19 @@ html.dark div.hover\:bg-gray-50\/50:hover {
   background-color: #1c2740 !important;
 }
 
-/* Completely remove dark tint on product images in dark mode */
+/* Product images showcase in dark mode */
 html.dark img,
 html.dark .mix-blend-multiply {
   mix-blend-mode: normal !important;
 }
 
-/* Provide a clean showcase background for product images in dark mode */
 html.dark .aspect-square,
 html.dark div[class*="pt-[100%]"],
+html.dark div[class*="pt-[90%]"],
+html.dark div[class*="pt-[85%]"],
 html.dark .w-16.h-16.flex-shrink-0,
+html.dark .w-20.h-20.flex-shrink-0,
+html.dark .w-24.h-24.flex-shrink-0,
 html.dark .w-10.h-10.flex-shrink-0 {
   background-color: #ffffff !important;
 }
-

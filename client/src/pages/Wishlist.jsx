@@ -1,13 +1,14 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
-import { CartContext } from '../context/CartContext';
-import { Heart, Trash2, ShoppingCart } from 'lucide-react';
+import { Heart, ArrowLeft, ShoppingBag } from 'lucide-react';
+import ProductCard from '../components/ProductCard';
+import { useToast } from '../context/ToastContext';
 
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState({ products: [] });
   const [loading, setLoading] = useState(true);
-  const { addToCart } = useContext(CartContext);
+  const toast = useToast();
 
   useEffect(() => {
     fetchWishlist();
@@ -16,7 +17,7 @@ const Wishlist = () => {
   const fetchWishlist = async () => {
     try {
       const res = await api.get('/wishlist');
-      setWishlist(res.data.data);
+      setWishlist(res.data.data || { products: [] });
     } catch (err) {
       console.error('Error fetching wishlist:', err);
     } finally {
@@ -24,93 +25,77 @@ const Wishlist = () => {
     }
   };
 
-  const removeFromWishlist = async (productId) => {
+  const handleWishlistToggle = async (productId) => {
     try {
-      const res = await api.delete(`/wishlist/${productId}`);
-      setWishlist(res.data.data);
+      await api.delete(`/wishlist/${productId}`);
+      setWishlist(prev => ({
+        ...prev,
+        products: prev.products.filter(p => p._id !== productId)
+      }));
+      toast.info('Item removed from wishlist');
     } catch (err) {
-      alert('Failed to remove from wishlist');
-    }
-  };
-
-  const handleAddToCart = async (product) => {
-    const res = await addToCart(product._id, 1);
-    if (res.success) {
-      removeFromWishlist(product._id);
+      toast.error('Failed to update wishlist');
     }
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[60vh]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <div className="w-12 h-12 rounded-full border-4 border-emerald-500 border-t-transparent animate-spin"></div>
       </div>
     );
   }
 
-  return (
-    <div className="bg-gray-50 min-h-screen py-8">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-2">
-          <Heart className="text-primary fill-primary w-6 h-6" /> My Wishlist
-        </h1>
+  const products = wishlist?.products || [];
 
-        {!wishlist?.products || wishlist.products.length === 0 ? (
-          <div className="bg-white p-10 rounded-2xl shadow-sm text-center border border-gray-100 max-w-2xl mx-auto">
-            <Heart className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Your wishlist is empty</h2>
-            <p className="text-gray-500 mb-6">Save items you love here to buy them later.</p>
-            <Link to="/products" className="bg-primary hover:bg-primary-dark text-white font-bold py-3 px-8 rounded-xl shadow-md transition inline-block">
-              Explore Products
+  return (
+    <div className="bg-gray-50/70 dark:bg-slate-950 min-h-screen py-8 text-gray-900 dark:text-gray-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8">
+          <div>
+            <Link to="/products" className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-emerald-600 mb-2 transition">
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to store
+            </Link>
+            <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight flex items-center gap-2.5">
+              <div className="p-2 rounded-2xl bg-rose-50 dark:bg-rose-950/40 text-rose-500">
+                <Heart className="w-6 h-6 fill-rose-500" />
+              </div>
+              <span>My Wishlist ({products.length})</span>
+            </h1>
+          </div>
+        </div>
+
+        {products.length === 0 ? (
+          <div className="bg-white dark:bg-slate-900 p-12 rounded-3xl shadow-sm text-center border border-gray-100 dark:border-slate-800 max-w-md mx-auto">
+            <div className="w-20 h-20 rounded-3xl bg-rose-50 dark:bg-rose-950/40 text-rose-400 flex items-center justify-center mx-auto mb-4">
+              <Heart className="w-10 h-10" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">Your wishlist is empty</h2>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+              Tap the heart icon on any grocery item to save it for quick reordering anytime.
+            </p>
+            <Link 
+              to="/products" 
+              className="px-6 py-3 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm shadow-md shadow-emerald-600/20 transition inline-block"
+            >
+              Explore Fresh Groceries
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {wishlist.products.map(product => (
-              <div key={product._id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition group border border-gray-100 flex flex-col h-full">
-                <div className="relative aspect-square mb-4 bg-gray-50 rounded-xl overflow-hidden p-4">
-                  <img src={product.image} alt={product.name} className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal group-hover:scale-105 transition duration-300" />
-                  <button 
-                    onClick={() => removeFromWishlist(product._id)}
-                    className="absolute top-2 right-2 p-2 bg-white rounded-full shadow-md text-red-500 hover:bg-red-50 transition"
-                    title="Remove from wishlist"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-                
-                <div className="flex-1 flex flex-col">
-                  <div className="text-sm text-gray-500 mb-1">{product.quantity} {product.unit}</div>
-                  <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">
-                    <Link to={`/products/${product._id}`} className="hover:text-primary">
-                      {product.name}
-                    </Link>
-                  </h3>
-                  
-                  <div className="mt-auto">
-                    <div className="flex items-center gap-2 mb-4">
-                      <span className="font-bold text-lg text-gray-900">
-                        ₹{product.discountPrice > 0 ? product.discountPrice : product.price}
-                      </span>
-                      {product.discountPrice > 0 && (
-                        <span className="text-sm text-gray-400 line-through">₹{product.price}</span>
-                      )}
-                    </div>
-                    
-                    <button
-                      onClick={() => handleAddToCart(product)}
-                      disabled={product.stock <= 0}
-                      className="w-full bg-primary hover:bg-primary-dark text-white font-medium py-2.5 rounded-xl transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      <ShoppingCart className="w-4 h-4" />
-                      {product.stock > 0 ? 'Move to Cart' : 'Out of Stock'}
-                    </button>
-                  </div>
-                </div>
-              </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 sm:gap-6">
+            {products.map(product => (
+              <ProductCard
+                key={product._id}
+                product={product}
+                isWishlisted={true}
+                onWishlistToggle={handleWishlistToggle}
+              />
             ))}
           </div>
         )}
+
       </div>
     </div>
   );

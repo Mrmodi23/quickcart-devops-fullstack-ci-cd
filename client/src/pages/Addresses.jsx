@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../utils/api';
+import { useToast } from '../context/ToastContext';
 import { MapPin, Plus, Edit, Trash2, Home, Briefcase, Building, Star, X, Map, Loader2 } from 'lucide-react';
 
 const Addresses = () => {
   const [addresses, setAddresses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const toast = useToast();
   
   // Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -88,8 +90,9 @@ const Addresses = () => {
       }
       fetchAddresses();
       closeModal();
+      toast.success(isEditing ? 'Address updated!' : 'Address added!');
     } catch (err) {
-      alert(err.response?.data?.message || 'Error saving address');
+      toast.error(err.response?.data?.message || 'Error saving address');
     }
   };
 
@@ -97,9 +100,10 @@ const Addresses = () => {
     if (window.confirm('Are you sure you want to delete this address?')) {
       try {
         await api.delete(`/addresses/${id}`);
+        toast.info('Address removed');
         fetchAddresses();
       } catch (err) {
-        alert('Failed to delete address');
+        toast.error('Failed to delete address');
       }
     }
   };
@@ -107,15 +111,16 @@ const Addresses = () => {
   const handleSetDefault = async (id) => {
     try {
       await api.put(`/addresses/${id}`, { isDefault: true });
+      toast.success('Default address updated');
       fetchAddresses();
     } catch (err) {
-      alert('Failed to set default address');
+      toast.error('Failed to set default address');
     }
   };
 
   const handleUseCurrentLocation = () => {
     if (!navigator.geolocation) {
-      alert('Geolocation is not supported by your browser');
+      toast.error('Geolocation is not supported by your browser');
       return;
     }
 
@@ -137,17 +142,18 @@ const Addresses = () => {
               state: data.address.state || '',
               pincode: data.address.postcode || ''
             }));
+            toast.success('Address auto-filled from current location!');
           }
         } catch (error) {
           console.error("Error fetching location data", error);
-          alert('Could not fetch address details for your location');
+          toast.error('Could not fetch address details for your location');
         } finally {
           setLocating(false);
         }
       },
       (error) => {
         console.error(error);
-        alert('Unable to retrieve your location. Please check your browser permissions.');
+        toast.warning('Unable to retrieve your location. Check browser permissions.');
         setLocating(false);
       }
     );

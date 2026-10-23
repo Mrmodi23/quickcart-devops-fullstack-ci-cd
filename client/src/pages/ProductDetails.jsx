@@ -3,7 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
 import { CartContext } from '../context/CartContext';
 import { AuthContext } from '../context/AuthContext';
-import { Star, Truck, ShieldCheck, ArrowLeft, Minus, Plus, Heart, MessageSquare, Trash2, CheckCircle2 } from 'lucide-react';
+import { useToast } from '../context/ToastContext';
+import { Star, Truck, ShieldCheck, ArrowLeft, Minus, Plus, Heart, MessageSquare, Trash2, CheckCircle2, Zap } from 'lucide-react';
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -73,9 +74,11 @@ const ProductDetails = () => {
     if (quantity < product?.stock) setQuantity(quantity + 1);
   };
 
+  const toast = useToast();
+
   const toggleWishlist = async () => {
     if (!user) {
-      alert('Please log in to manage your wishlist');
+      toast.warning('Please log in to manage your wishlist');
       return;
     }
     setWishlistLoading(true);
@@ -83,12 +86,14 @@ const ProductDetails = () => {
       if (isWishlisted) {
         await api.delete(`/wishlist/${id}`);
         setIsWishlisted(false);
+        toast.info('Removed from wishlist');
       } else {
         await api.post(`/wishlist/${id}`);
         setIsWishlisted(true);
+        toast.success('Saved to wishlist!');
       }
     } catch (err) {
-      alert('Failed to update wishlist');
+      toast.error('Failed to update wishlist');
     } finally {
       setWishlistLoading(false);
     }
@@ -127,10 +132,11 @@ const ProductDetails = () => {
     if (!window.confirm('Are you sure you want to delete this review?')) return;
     try {
       await api.delete(`/products/${id}/reviews/${reviewId}`);
+      toast.info('Review deleted');
       fetchReviews();
       fetchProduct();
     } catch (err) {
-      alert('Failed to delete review');
+      toast.error('Failed to delete review');
     }
   };
 
@@ -258,12 +264,15 @@ const ProductDetails = () => {
                     onClick={async () => {
                       const res = await addToCart(product._id, quantity);
                       if (res.success) {
-                        alert('Added to cart!');
+                        toast.success(`${quantity}x ${product.name} added to your cart!`);
+                      } else {
+                        toast.error(res.message || 'Could not add to cart');
                       }
                     }}
-                    className="flex-1 bg-primary hover:bg-primary-dark text-white h-12 rounded-lg font-bold shadow-md shadow-primary/30 transition flex items-center justify-center cursor-pointer"
+                    className="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white h-12 rounded-xl font-bold shadow-lg shadow-emerald-600/25 transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer active:scale-[0.98]"
                   >
-                    Add to Cart
+                    <Plus className="w-5 h-5" />
+                    <span>Add to Basket</span>
                   </button>
                   <button
                     onClick={toggleWishlist}
