@@ -1,1 +1,0 @@
-sudo tailscale funnel 8080
